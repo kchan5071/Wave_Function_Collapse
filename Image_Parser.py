@@ -1,27 +1,20 @@
 from PIL import Image
 import os
+import numpy as np
 
-def convert_image_to_bitmap(image, base_name, file_path, output_path):
-    index = 0
+
+def get_images(file_path):
+    images = []
     for file in os.listdir(file_path):
         if file.endswith(".png"):
-            image = Image.open(file_path + file)
-            image.save(output_path + base_name + "_" + str(index) + ".bmp")
-            index += 1
+            images.append(Image.open(file_path + file))
+    return images
 
-def get_bitmaps(image_path):
-    bitmaps = []
-    for file in os.listdir(image_path):
-        if file.endswith(".bmp"):
-            bitmaps.append(file)
-    return bitmaps
-
-def main():
-    current_directory = os.getcwd()
-    image_path = current_directory + "/Assets/";
-    output_path = image_path + "/Bitmaps/";
-    convert_image_to_bitmap(image_path, "test", image_path, output_path)
-
-if __name__ == "__main__":
-    main()
+def split_image(image, pattern_size):
+    images = []
+    for i in range(0, image.width // pattern_size):
+        images.append([])
+        for j in range(0, image.height // pattern_size):
+            images[i].append(image.crop((i * pattern_size, j * pattern_size, (i + 1) * pattern_size, (j + 1) * pattern_size)))
+    return images
 
