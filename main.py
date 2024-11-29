@@ -5,10 +5,11 @@ import numpy as np
 
 import Image_Parser
 import Bitmap_Edge_Encoder
+import Edge_Node
 
 def get_args():
     default_output_path = os.getcwd();
-    default_pattern_size = 16;
+    default_pattern_size = 6;
     parser = argparse.ArgumentParser(description='Wave Function Collapse')
     parser.add_argument('-n', type=int, default=default_pattern_size, help='Pattern size')
     parser.add_argument('-o', type=str, default=default_output_path, help='Output path')
@@ -42,8 +43,21 @@ def main():
             edge = Bitmap_Edge_Encoder.encode_bitmap_edges(bitmap, pattern_size)
             edges.append(edge)
 
-    print(len(edges), len(edges[0]), len(edges[0][0]))
+    # print(len(edges), len(edges[0]), len(edges[0][0]))
+    
+    # #show the edges
+    # for i in range(0, len(edges)):
+    #     for j in range(0, len(edges[0])):
+    #         print(edges[i][j])
 
+    #initialize edge nodes
+    edge_nodes = []
+    for i in range(0, len(split_images)):
+        edge_nodes.append([])
+        for j in range(0, len(split_images[0])):
+            edge_nodes[i].append(Edge_Node.Edge_Node(edges[i * len(split_images[0]) + j], split_images[i][j]))
+
+    # print(len(edge_nodes), len(edge_nodes[0]))
         
     
 
