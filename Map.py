@@ -1,5 +1,5 @@
 import Bitmap_Edge_Encoder
-import Edge_Node
+import MapNode
 
 class Map: 
     def __init__(self, width, height, pattern_size, edge_nodes, tiles):
