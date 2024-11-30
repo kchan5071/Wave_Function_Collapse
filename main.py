@@ -56,9 +56,11 @@ def main():
     for i in range(0, len(split_images)):
         edge_nodes.append([])
         for j in range(0, len(split_images[0])):
-            edge_nodes[i].append(Edge_Node.MapNode(edges[i * len(split_images[0]) + j], split_images[i][j]))
+            edge_nodes[i].append(MapNode.MapNode(edges[i * len(split_images[0]) + j], split_images[i][j]))
 
-    model = Model(5, 5, 3)
+    edge_nodes_flattened = sum(edge_nodes, [])
+    model = Model(5, 5, len(edge_nodes_flattened))
+    model.run(edge_nodes_flattened)
 
 if __name__ == "__main__":
     main()
