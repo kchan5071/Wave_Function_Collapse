@@ -2,13 +2,13 @@ import Bitmap_Edge_Encoder
 import MapNode
 
 class Map: 
-    def __init__(self, width, height, pattern_size, edge_nodes, tiles):
+    def __init__(self, width, height, pattern_size, map_node, tiles):
         self.width = width
         self.height = height
         self.pattern_size = pattern_size
         self.tile_images = tiles
         self.edges = []
-        edge_nodes = []
+        self.map_node = map_node
         self.entropy_map = []
 
     def get_initial_size(self):
@@ -37,6 +37,7 @@ class Map:
                     lowest_entropy = self.entropy_map[i][j]
                     lowest_entropy_index = (i, j)
         return lowest_entropy_index
+
     
     
     

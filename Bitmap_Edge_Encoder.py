@@ -11,12 +11,12 @@ def rgb_to_hex(rgb):
 
 def encode_bitmap_edges(bitmap, pattern_size):
     hex_values = initialize_hex_values(pattern_size)
+    #do three sample points on each edge
     for i in range(0, pattern_size):
         hex_values[0][i] = rgb_to_hex(bitmap[i][0])
-        hex_values[1][i] = rgb_to_hex(bitmap[i][pattern_size - 1])
-    for i in range(0, pattern_size):
-        hex_values[2][i] = rgb_to_hex(bitmap[0][i])
-        hex_values[3][i] = rgb_to_hex(bitmap[pattern_size - 1][i])
+        hex_values[1][i] = rgb_to_hex(bitmap[pattern_size - 1][i])
+        hex_values[2][i] = rgb_to_hex(bitmap[i][pattern_size - 1])
+        hex_values[3][i] = rgb_to_hex(bitmap[0][i])
     return hex_values
 
 def convert_image_to_bitmap(image):
