@@ -6,7 +6,7 @@ class MapNode:
         self.EAST = None
         self.SOUTH = None
         self.WEST = None
-        self.valid_tiles = edge_image_dictionary
+        self.valid_tiles = edge_image_dictionary.copy()
         self.edge_dictionary = edge_image_dictionary
         self.collapsed = False
         self.tile_image = None
@@ -36,7 +36,7 @@ class MapNode:
         self.WEST = edge
 
     def get_edges(self):
-        return self.edges
+        return self.NORTH, self.EAST, self.SOUTH, self.WEST
     
     def get_tile(self):
         return self.tile_image
@@ -45,27 +45,36 @@ class MapNode:
         # Randomly choose a tile from the valid tiles
         # also works with one tile
         random_tile = random.choice(self.valid_tiles)
-        self.NORTH = random_tile.get_north()
-        self.EAST = random_tile.get_east()
-        self.SOUTH = random_tile.get_south()
-        self.WEST = random_tile.get_west()
+        random_tile_edges = random_tile.get_edges()
+        # Set the edges of the node to the edges of the random tile
+        self.NORTH = random_tile_edges[0]
+        self.EAST = random_tile_edges[1]
+        self.SOUTH = random_tile_edges[2]
+        self.WEST = random_tile_edges[3]
+
+        # Set the tile image to the image of the random tile
         self.tile_image = random_tile.get_image()
+
+        # Set the node to collapsed
         self.collapsed = True
+
+        #set the valid tiles to the random tile
+        self.valid_tiles = [random_tile]
     
-    def remove_invalid_tiles(self):
+    def remove_invalid_states(self):
         # Remove tiles that do not have the correct edge, part of the propagation process
         # to make it easier
         # North(0), East(1), South(2), West(3)
-        for tiles in self.valid_tiles:
-            tile_edges = tiles.get_edges()
-            if self.NORTH is not None and self.NORTH != tile_edges[0]:
-                self.valid_tiles.remove(tiles)
-            if self.EAST is not None and self.EAST != tile_edges[1]:
-                self.valid_tiles.remove(tiles)
-            if self.SOUTH is not None and self.SOUTH != tile_edges[2]:
-                self.valid_tiles.remove(tiles)
-            if self.WEST is not None and self.WEST != tile_edges[3]:
-                self.valid_tiles.remove(tiles)
+        for tile in self.valid_tiles:
+            tile_edges = tile.get_edges()
+            if self.NORTH is not None and self.NORTH != tile_edges[0] and tile in self.valid_tiles:
+                self.valid_tiles.remove(tile)
+            if self.EAST is not None and self.EAST != tile_edges[1] and tile in self.valid_tiles:
+                self.valid_tiles.remove(tile)
+            if self.SOUTH is not None and self.SOUTH != tile_edges[2] and tile in self.valid_tiles:
+                self.valid_tiles.remove(tile)
+            if self.WEST is not None and self.WEST != tile_edges[3]and tile in self.valid_tiles:
+                self.valid_tiles.remove(tile)
         
         # If there is only one valid tile, node is collapsed
         if len(self.valid_tiles) is 1:

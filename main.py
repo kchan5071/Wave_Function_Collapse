@@ -71,7 +71,7 @@ def main():
     map_node = MapNode.MapNode(image_edge_dictionary)
 
     #initialize map
-    model = Model(width, height, pattern_size, map_node, split_images)
+    model = Model(width, height, pattern_size, split_images, image_edge_dictionary)
     model.run()
     
 
