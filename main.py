@@ -13,7 +13,7 @@ from Wave_Function_Collapse import Model
 
 def get_args():
     default_output_path = os.getcwd()
-    default_pattern_size = 3
+    default_pattern_size = 32
     parser = argparse.ArgumentParser(description='Wave Function Collapse')
     parser.add_argument('-n', type=int, default=default_pattern_size, help='Pattern size')
     parser.add_argument('-o', type=str, default=default_output_path, help='Output path')
@@ -34,45 +34,44 @@ def main():
 
     images = Image_Parser.get_images(current_directory + "/Assets/")
     split_images = Image_Parser.split_image(images[0], pattern_size)
-    print(len(split_images), len(split_images[0]))
-
+    print("Split Images: ", len(split_images))
     #show the split images
     # for i in range(0, len(split_images)):
-    #     for j in range(0, len(split_images[0])):
-    #         cv2.imshow("Image", np.array(split_images[i][j]))
+    #         cv2.imshow("Image", np.array(split_images[i]))
     #         cv2.waitKey(0)
+
+    #save split_images in test
+    # for i in range(0, len(split_images)):
+    #     cv2.imwrite("test" + str(i) + ".png", np.array(split_images[i]))
 
     edges = []
     for i in range(0, len(split_images)):
-        for j in range(0, len(split_images[0])):
-            bitmap = Bitmap_Edge_Encoder.convert_image_to_bitmap(split_images[i][j])
-            edge = Bitmap_Edge_Encoder.encode_bitmap_edges(bitmap, pattern_size)
-            edges.append(edge)
+        bitmap = Bitmap_Edge_Encoder.convert_image_to_bitmap(split_images[i])
+        edge = Bitmap_Edge_Encoder.encode_bitmap_edges(bitmap, pattern_size)
+        edges.append(edge)
 
-    print(len(edges), len(edges[0]), len(edges[0][0]))
-    print(len(split_images), len(split_images[0]))
+    print("Edges: ", len(edges))
+
 
     # show the edges
-    # for i in range(0, len(edges)):
-    #     for j in range(0, len(edges[0])):
-    #         print(edges[i][j])
+    for i in range(0, len(edges)):
+        print(edges[i])
 
-    #     print("\n")
 
     #initialize edge image pairs
     image_edge_dictionary = []
     index = 0
-    for x in range(0, len(split_images)):
-        for y in range(0, len(split_images[0])):
-            image_edge_dictionary.append(Edge_Image_Pair(edges[index], split_images[y][x]))
-            index += 1
-        
-    #initialize map node
-    map_node = MapNode.MapNode(image_edge_dictionary)
+    for i in range(0, len(split_images)):
+        image_edge_dictionary.append(Edge_Image_Pair(edges[index], split_images[i]))
+        index += 1
 
     #initialize map
     model = Model(width, height, pattern_size, split_images, image_edge_dictionary)
-    model.run()
+    save_bitmap = model.run()
+
+    #show the final image
+    cv2.imshow("Image", np.array(save_bitmap))
+    cv2.waitKey(0)
     
 
     # model = Model(5, 5, len(map_nodes), len(map_nodes[0]), map_nodes)

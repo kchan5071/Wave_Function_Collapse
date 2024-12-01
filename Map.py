@@ -1,5 +1,6 @@
 import Bitmap_Edge_Encoder
 from MapNode import MapNode
+import random
 
 class Map: 
     def __init__(self, width, height, pattern_size, tiles, edge_image_dictionary):
@@ -42,6 +43,37 @@ class Map:
                 if self.tiles[i][j].get_entropy() < lowest_entropy:
                     lowest_entropy = self.tiles[i][j].get_entropy()
         return lowest_entropy
+    
+    def find_lowest_nodes(self):
+        lowest_entropy = self.tiles[0][0].get_entropy()
+        lowest_entropy_nodes = []
+        for i in range(0, self.width):
+            for j in range(0, self.height):
+                if self.tiles[i][j].get_entropy() < lowest_entropy:
+                    lowest_entropy = self.tiles[i][j].get_entropy()
+                    lowest_entropy_nodes = [(i, j)]
+                elif self.tiles[i][j].get_entropy() == lowest_entropy:
+                    lowest_entropy_nodes.append((i, j))
+        return lowest_entropy_nodes
+    
+    def find_next_node(self):
+        lowest_entropy_index = (random.randint(0, self.width - 1), random.randint(0, self.height - 1))
+        lowest_entropy = 100000
+        for i in range(0, self.width):
+            for j in range(0, self.height):
+                tile_entropy = self.tiles[i][j].get_entropy()
+                if tile_entropy < lowest_entropy and tile_entropy > 1:
+                    lowest_entropy = tile_entropy
+                    lowest_entropy_index = (i, j)
+        return lowest_entropy_index
+    
+    def find_highest_entropy(self):
+        highest_entropy = self.tiles[0][0].get_entropy()
+        for i in range(0, self.width):
+            for j in range(0, self.height):
+                if self.tiles[i][j].get_entropy() > highest_entropy:
+                    highest_entropy = self.tiles[i][j].get_entropy()
+        return highest_entropy
     
     def print_entropy(self):
         for i in range(0, self.width):

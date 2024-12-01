@@ -1,14 +1,17 @@
 from Map import Map
 from MapNode import MapNode
+from PIL import Image
 
 class Model:
     def __init__(self, width, height, pattern_size, map_node,split_images):
         self.map = Map(width, height, pattern_size, map_node, split_images)
 
-    def collapse_node(self, x, y):
+    def collapse_node(self, position):
+        x, y = position
         self.map.tiles[x][y].collapse()
 
-    def propagate_entropy(self, x, y):
+    def propagate_entropy(self, position):
+        x, y = position
         # set south edge of node above to north edge of current node
         north_node = self.map.get_node(x, y - 1)
         if north_node is not None:
@@ -33,38 +36,31 @@ class Model:
             east_node.set_west(self.map.tiles[x][y].get_east())
             east_node.remove_invalid_states()
 
+    def build_map_image(self):
+        width, height = self.map.get_initial_size()
+        image = Image.new("RGB", (width * self.map.pattern_size, height * self.map.pattern_size))
+        for i in range(0, width):
+            for j in range(0, height):
+                tile_image = self.map.tiles[i][j].get_tile()
+                for x in range(0, self.map.pattern_size):
+                    for y in range(0, self.map.pattern_size):
+                        image.putpixel((i * self.map.pattern_size + x, j * self.map.pattern_size + y), tile_image.getpixel((x, y)))
+        return image
+
     
     def run(self):
 
-        #collapse the first node
-        self.collapse_node(0, 0)
+        while self.map.find_highest_entropy() > 1 and self.map.find_lowest_entropy() != 0:
+            lowest_entropy = self.map.find_next_node()
+            print(lowest_entropy)
+            self.collapse_node(lowest_entropy)
+            self.propagate_entropy(lowest_entropy)
+            self.map.print_entropy()
+            print("\n")
 
-        #propagate entropy
-        self.propagate_entropy(0, 0)
-
-        #print entropy map
-        self.map.print_entropy()
-
-        #print all tiles
+        if self.map.find_lowest_entropy() == 0:
+            print("CONTRADICTION")
+            exit(1)
         self.map.print_all_edges()
+        return self.build_map_image()
 
-        #find the lowest entropy
-        lowest_entropy = self.map.find_lowest_entropy()
-
-        #collapse the node with the lowest entropy
-        self.collapse_node(1, 1)
-
-        #propagate entropy
-        self.propagate_entropy(1, 1)
-
-        #print entropy map
-        self.map.print_entropy()
-
-        #print all tiles
-        self.map.print_all_edges()
-
-        #find the lowest entropy
-        lowest_entropy = self.map.find_lowest_entropy()
-
-        print("Lowest Entropy: ", lowest_entropy)
-        print("done")

@@ -13,8 +13,13 @@ def get_images(file_path):
 def split_image(image, pattern_size):
     images = []
     for i in range(0, image.width // pattern_size):
-        images.append([])
         for j in range(0, image.height // pattern_size):
-            images[i].append(image.crop((i * pattern_size, j * pattern_size, (i + 1) * pattern_size, (j + 1) * pattern_size)))
+            images.append(image.crop((i * pattern_size, j * pattern_size, (i + 1) * pattern_size, (j + 1) * pattern_size)))
+
+    #add rotation of images
+    for i in range(0, len(images)):
+            images.append(images[i].rotate(90))
+            images.append(images[i].rotate(180))
+            images.append(images[i].rotate(270))
     return images
 

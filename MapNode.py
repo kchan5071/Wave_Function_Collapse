@@ -11,6 +11,7 @@ class MapNode:
         self.collapsed = False
         self.tile_image = None
 
+    #getters
     def get_north(self):
         return self.NORTH
     
@@ -23,6 +24,16 @@ class MapNode:
     def get_west(self):
         return self.WEST
     
+
+
+    def get_edges(self):
+        return self.NORTH, self.EAST, self.SOUTH, self.WEST
+    
+    def get_tile(self):
+        return self.tile_image
+    
+    
+    #setters
     def set_north(self, edge):
         self.NORTH = edge
 
@@ -35,12 +46,6 @@ class MapNode:
     def set_west(self, edge):
         self.WEST = edge
 
-    def get_edges(self):
-        return self.NORTH, self.EAST, self.SOUTH, self.WEST
-    
-    def get_tile(self):
-        return self.tile_image
-    
     def collapse(self):
         # Randomly choose a tile from the valid tiles
         # also works with one tile
@@ -65,6 +70,8 @@ class MapNode:
         # Remove tiles that do not have the correct edge, part of the propagation process
         # to make it easier
         # North(0), East(1), South(2), West(3)
+        if self.collapsed:
+            return
         for tile in self.valid_tiles:
             tile_edges = tile.get_edges()
             if self.NORTH is not None and self.NORTH != tile_edges[0] and tile in self.valid_tiles:
@@ -80,6 +87,13 @@ class MapNode:
         if len(self.valid_tiles) is 1:
             self.collapsed = True
             self.tile_image = self.valid_tiles[0].get_image()
+
+        if len(self.valid_tiles) is 0:
+            print("CONTRADICTION")
+            print("NORTH: " + str(self.NORTH))
+            print("EAST: " + str(self.EAST))
+            print("SOUTH: " + str(self.SOUTH))
+            print("WEST: " + str(self.WEST))
 
     def get_entropy(self):
         return len(self.valid_tiles)
