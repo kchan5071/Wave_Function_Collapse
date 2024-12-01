@@ -25,8 +25,8 @@ def get_initial_size(bitmap):
 
 def main():
     args = get_args()
-    width = 5
-    height = 5
+    width = 10
+    height = 10
     current_directory = os.getcwd()
     output_path = args.o
     pattern_size = args.n
@@ -53,9 +53,9 @@ def main():
     print("Edges: ", len(edges))
 
 
-    # show the edges
-    for i in range(0, len(edges)):
-        print(edges[i])
+    # # show the edges
+    # for i in range(0, len(edges)):
+    #     print(edges[i])
 
 
     #initialize edge image pairs
@@ -68,6 +68,13 @@ def main():
     #initialize map
     model = Model(width, height, pattern_size, split_images, image_edge_dictionary)
     save_bitmap = model.run()
+
+    #enlarge the image
+    scale_percent = 200
+    width = int(save_bitmap.width * scale_percent / 100)
+    height = int(save_bitmap.height * scale_percent / 100)
+    dim = (width, height)
+    save_bitmap = save_bitmap.resize(dim, cv2.INTER_AREA)
 
     #show the final image
     cv2.imshow("Image", np.array(save_bitmap))

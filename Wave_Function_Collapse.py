@@ -1,6 +1,7 @@
 from Map import Map
 from MapNode import MapNode
 from PIL import Image
+import random
 
 class Model:
     def __init__(self, width, height, pattern_size, map_node,split_images):
@@ -37,7 +38,7 @@ class Model:
             east_node.remove_invalid_states()
 
     def build_map_image(self):
-        width, height = self.map.get_initial_size()
+        width, height = (self.map.width, self.map.height)
         image = Image.new("RGB", (width * self.map.pattern_size, height * self.map.pattern_size))
         for i in range(0, width):
             for j in range(0, height):
@@ -49,18 +50,24 @@ class Model:
 
     
     def run(self):
+        #collapse random node
+        random_node = (random.randint(0, self.map.width - 1), random.randint(0, self.map.height - 1))
+        self.collapse_node(random_node)
+
+        #propagate entropy
+        self.propagate_entropy(random_node)
 
         while self.map.find_highest_entropy() > 1 and self.map.find_lowest_entropy() != 0:
+            #find node with lowest entropy
             lowest_entropy = self.map.find_next_node()
-            print(lowest_entropy)
+            #collapse node
             self.collapse_node(lowest_entropy)
+            #propagate entropy
             self.propagate_entropy(lowest_entropy)
-            self.map.print_entropy()
-            print("\n")
 
         if self.map.find_lowest_entropy() == 0:
             print("CONTRADICTION")
             exit(1)
-        self.map.print_all_edges()
+
         return self.build_map_image()
 

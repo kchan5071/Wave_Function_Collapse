@@ -88,6 +88,8 @@ class MapNode:
             self.collapsed = True
             self.tile_image = self.valid_tiles[0].get_image()
 
+        # If there are no valid tiles, there is a contradiction
+        # print the edges of the node that caused the contradiction
         if len(self.valid_tiles) is 0:
             print("CONTRADICTION")
             print("NORTH: " + str(self.NORTH))
