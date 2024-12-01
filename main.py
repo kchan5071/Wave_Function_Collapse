@@ -6,7 +6,7 @@ import numpy as np
 import Image_Parser
 import Bitmap_Edge_Encoder
 import MapNode
-from Model import Model
+import Model
 
 def get_args():
     default_output_path = os.getcwd()
@@ -59,8 +59,7 @@ def main():
             edge_nodes[i].append(MapNode.MapNode(edges[i * len(split_images[0]) + j], split_images[i][j]))
 
     edge_nodes_flattened = sum(edge_nodes, [])
-    model = Model(5, 5, len(edge_nodes_flattened))
-    model.run(edge_nodes_flattened)
+    print(Model.run(5, 5, edge_nodes_flattened))
 
 if __name__ == "__main__":
     main()
