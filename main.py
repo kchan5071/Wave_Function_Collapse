@@ -6,7 +6,10 @@ import numpy as np
 import Image_Parser
 import Bitmap_Edge_Encoder
 import MapNode
-from Model import Model
+from Map import Map
+from Edge_Image_Pair import Edge_Image_Pair
+from Wave_Function_Collapse import Model
+# from Model import Model
 
 def get_args():
     default_output_path = os.getcwd()
@@ -22,14 +25,16 @@ def get_initial_size(bitmap):
 
 def main():
     args = get_args()
+    width = 5
+    height = 5
     current_directory = os.getcwd()
     output_path = args.o
     pattern_size = args.n
-    # print ("Pattern Size: ", pattern_size)
+    print ("Pattern Size: ", pattern_size)
 
     images = Image_Parser.get_images(current_directory + "/Assets/")
     split_images = Image_Parser.split_image(images[0], pattern_size)
-    # print(len(split_images), len(split_images[0]))
+    print(len(split_images), len(split_images[0]))
 
     #show the split images
     # for i in range(0, len(split_images)):
@@ -44,7 +49,8 @@ def main():
             edge = Bitmap_Edge_Encoder.encode_bitmap_edges(bitmap, pattern_size)
             edges.append(edge)
 
-    # print(len(edges), len(edges[0]), len(edges[0][0]))
+    print(len(edges), len(edges[0]), len(edges[0][0]))
+    print(len(split_images), len(split_images[0]))
 
     # show the edges
     # for i in range(0, len(edges)):
@@ -53,32 +59,21 @@ def main():
 
     #     print("\n")
 
-    #initialize edge nodes
-    map_nodes = []
-    for i in range(0, len(split_images)):
-        map_nodes.append([])
-        for j in range(0, len(split_images[0])):
-            map_nodes[i].append(MapNode.MapNode(edges[i * len(split_images[0]) + j], split_images[i][j]))
-
-    #add edges to map nodes
-    for i in range(0, len(map_nodes)):
-        for j in range(0, len(map_nodes[0])):
-            map_nodes[i][j].check_all_nodes_for_adjacency(map_nodes)
-
-
-    #print map node edges
-    # for i in range(0, len(map_nodes)):
-    #     for j in range(0, len(map_nodes[0])):
-    #         print(map_nodes[i][j].get_edges())
-
-    #print valid adjacent tiles
-    # for i in range(0, len(map_nodes)):
-    #     for j in range(0, len(map_nodes[0])):
-    #         print(map_nodes[i][j].get_valid_adjacent_tiles())
-
-    #     print("\n")
+    #initialize edge image pairs
+    image_edge_dictionary = []
+    index = 0
+    for x in range(0, len(split_images)):
+        for y in range(0, len(split_images[0])):
+            image_edge_dictionary.append(Edge_Image_Pair(edges[index], split_images[y][x]))
+            index += 1
+        
+    #initialize map node
+    map_node = MapNode.MapNode(image_edge_dictionary)
 
     #initialize map
+    model = Model(width, height, pattern_size, map_node, split_images)
+    model.run()
+    
 
     # model = Model(5, 5, len(map_nodes), len(map_nodes[0]), map_nodes)
     # model.run()

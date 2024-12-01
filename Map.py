@@ -9,7 +9,8 @@ class Map:
         self.tile_images = tiles
         self.edges = []
         self.map_node = map_node
-        self.entropy_map = []
+
+        self.initialize_empty_map()
 
     def get_initial_size(self):
         return self.width, self.height
@@ -19,24 +20,23 @@ class Map:
         for i in range(0, self.width):
             self.tiles.append([])
             for j in range(0, self.height):
-                self.tiles[i].append(None)
-
-    def initialize_entropy_map(self):
-        self.entropy_map = []
-        for i in range(0, self.width):
-            self.entropy_map.append([])
-            for j in range(0, self.height):
-                self.entropy_map[i].append(0)
+                self.tiles[i].append(self.map_node)
 
     def find_lowest_entropy(self):
-        lowest_entropy = 1000000
-        lowest_entropy_index = (0, 0)
+        lowest_entropy = self.tiles[0][0].get_entropy()
         for i in range(0, self.width):
             for j in range(0, self.height):
-                if self.entropy_map[i][j] < lowest_entropy:
-                    lowest_entropy = self.entropy_map[i][j]
-                    lowest_entropy_index = (i, j)
-        return lowest_entropy_index
+                if self.tiles[i][j].get_entropy() < lowest_entropy:
+                    lowest_entropy = self.tiles[i][j].get_entropy()
+        return lowest_entropy
+    
+    def print_entropy(self):
+        for i in range(0, self.width):
+            print_string = ""
+            for j in range(0, self.height):
+                print_string += str(self.tiles[i][j].get_entropy()) + " "
+            print(print_string)
+
 
     
     
