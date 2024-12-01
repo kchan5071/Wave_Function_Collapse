@@ -1,12 +1,6 @@
-from typing import List
-
 import numpy as np
 
 import copy
-
-from select import select
-
-import MapNode
 
 def propagate(row, col, wave, patterns, selected_pattern):
     # Update allowed patterns for tiles to the right and below
@@ -32,29 +26,43 @@ def propagate(row, col, wave, patterns, selected_pattern):
                 right_tile_patterns[right_pattern_index] = False
 
 # patterns is an array of MapNode containing every possible pattern
-def find_pattern_for_square(height, width, row, col, wave, patterns):
+# This function should recursively call itself to fill in the next tile based on temp_wave
+# Fill in output from left to right, top to bottom
+# If it becomes impossible to continue, backtrack until we reach a point where a different pattern can be tried
+def find_pattern_for_square(height, width, row, col, wave, patterns, patterns_chosen):
     # len(patterns) = len(allowed_patterns)
     num_patterns = len(patterns)
     allowed_patterns = wave[row, col]
     temp_wave = copy.deepcopy(wave)
 
+    # TODO: introduce randomness in pattern selection to make more interesting outputs
     for pattern_index in range(num_patterns - 1):
         if allowed_patterns[pattern_index]:
             # This pattern is allowed, try using it
             new_allowed_patterns = [False for _ in range(num_patterns)]
             new_allowed_patterns[pattern_index] = True
             temp_wave[row, col] = new_allowed_patterns
+            patterns_chosen[row][col] = pattern_index
 
             propagate(row, col, temp_wave, patterns, patterns[pattern_index])
 
-            # TODO: Finish this function
-            # This function should recursively call itself to fill in the next tile based on temp_wave
-            # Fill in output from left to right, top to bottom
-            # If it becomes impossible to continue, backtrack until we reach a point where a different pattern can be tried
-            return temp_wave
+            next_col = col + 1
+            next_row = row
+            if next_col == width:
+                next_row += 1
+                next_col = 0
+                if next_row == height:
+                    # This square is the last square in the output
+                    return patterns_chosen
+
+            next_result = find_pattern_for_square(height, width, next_row, next_col, temp_wave, patterns, patterns_chosen)
+
+            if len(next_result) != 0:
+                return next_result
     # If the function reaches this point then no solution is possible
     return []
 
 def run(height, width, patterns):
     wave = np.ones((height, width, len(patterns)), dtype=bool)
-    return find_pattern_for_square(height, width, 0, 0, wave, patterns)
+    patterns_chosen = [[-1 for _ in range(width)] for _ in range(height)]
+    return find_pattern_for_square(height, width, 0, 0, wave, patterns, patterns_chosen)
