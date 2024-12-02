@@ -13,7 +13,7 @@ from Wave_Function_Collapse import Model
 
 def get_args():
     default_output_path = os.getcwd()
-    default_pattern_size = 32
+    default_pattern_size = 3
     parser = argparse.ArgumentParser(description='Wave Function Collapse')
     parser.add_argument('-n', type=int, default=default_pattern_size, help='Pattern size')
     parser.add_argument('-o', type=str, default=default_output_path, help='Output path')
@@ -25,8 +25,8 @@ def get_initial_size(bitmap):
 
 def main():
     args = get_args()
-    width = 10
-    height = 10
+    width = 4
+    height = 4
     current_directory = os.getcwd()
     output_path = args.o
     pattern_size = args.n
