@@ -9,10 +9,10 @@ from Map import Map
 from Edge_Image_Pair import Edge_Image_Pair
 from Wave_Function_Collapse import Model
 
-
 def get_args():
     default_output_path = os.getcwd()
-    default_pattern_size = 32
+    default_pattern_size = 3
+
     parser = argparse.ArgumentParser(description='Wave Function Collapse')
     parser.add_argument('-n', type=int, default=default_pattern_size, help='Pattern size')
     parser.add_argument('-o', type=str, default=default_output_path, help='Output path')
@@ -81,7 +81,6 @@ def main():
     cv2.imshow("Generated Image", np.array(save_bitmap))
     cv2.waitKey(0)
     cv2.destroyAllWindows()
-
 
 if __name__ == "__main__":
     main()

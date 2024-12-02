@@ -8,9 +8,8 @@ class Edge_Image_Pair:
         self.image = image
 
     def get_edges(self):
-        # Return all edges as a tuple (NORTH, EAST, SOUTH, WEST)
         return self.NORTH, self.EAST, self.SOUTH, self.WEST
 
     def get_image(self):
-        # Return the image associated with this pair
         return self.image
+

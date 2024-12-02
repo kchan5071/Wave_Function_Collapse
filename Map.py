@@ -50,7 +50,6 @@ class Map:
         return lowest_entropy
     
     def find_lowest_nodes(self):
-        # Find all nodes with the lowest entropy in the map
         lowest_entropy = self.tiles[0][0].get_entropy()
         lowest_entropy_nodes = []
         for i in range(0, self.width):
@@ -63,7 +62,6 @@ class Map:
         return lowest_entropy_nodes
     
     def find_next_node(self):
-        # Find the next node with the lowest entropy greater than 1
         lowest_entropy_index = (random.randint(0, self.width - 1), random.randint(0, self.height - 1))
         lowest_entropy = 100000
         for i in range(0, self.width):
@@ -82,6 +80,20 @@ class Map:
                 if self.tiles[i][j].get_entropy() > highest_entropy:
                     highest_entropy = self.tiles[i][j].get_entropy()
         return highest_entropy
+    
+    def print_entropy(self):
+        for i in range(0, self.width):
+            print_string = ""
+            for j in range(0, self.height):
+                print_string += str(self.tiles[i][j].get_entropy()) + " "
+            print(print_string)
+
+    def print_all_edges(self):
+        for i in range(0, self.width):
+            print_string = ""
+            for j in range(0, self.height):
+                print_string += str(self.tiles[i][j].get_edges()) + " "
+            print(print_string)
     
     def print_entropy(self):
         # Print the entropy values of all nodes in the map

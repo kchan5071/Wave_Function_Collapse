@@ -15,19 +15,25 @@ def split_image(image, pattern_size):
     images = []
     print("Image Size: ", image.width, image.height)
     if image.width == pattern_size and image.height == pattern_size:
-        # If the image matches the pattern size, add original and rotated versions
         images.append(image)
-        images.append(image.rotate(90))  # Rotate 90 degrees
-        images.append(image.rotate(180))  # Rotate 180 degrees
-        images.append(image.rotate(270))  # Rotate 270 degrees
+        #add rotation of images
+        images.append(image.rotate(90))
+        images.append(image.rotate(180))
+        images.append(image.rotate(270))
         return images
     
-    # Split the image into pattern_size x pattern_size tiles
-    for i in range(0, image.width // pattern_size):  # Iterate over rows
-        for j in range(0, image.height // pattern_size):  # Iterate over columns
-            images.append(
-                image.crop((i * pattern_size, j * pattern_size, (i + 1) * pattern_size, (j + 1) * pattern_size))
-            )
+    #split image into pattern_size x pattern_size images
+    for i in range(0, image.width // pattern_size):
+        for j in range(0, image.height // pattern_size):
+            images.append(image.crop((i * pattern_size, j * pattern_size, (i + 1) * pattern_size, (j + 1) * pattern_size)))
+
+    #add rotation of images
+    for i in range(0, len(images)):
+            images.append(images[i].rotate(90))
+            images.append(images[i].rotate(180))
+            images.append(images[i].rotate(270))
+    return images
+
 
     # Add rotated versions of each tile
     for i in range(0, len(images)):
