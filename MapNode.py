@@ -72,25 +72,24 @@ class MapNode:
         # North(0), East(1), South(2), West(3)
         if self.collapsed:
             return
+        tiles_to_remove = []
         for tile in self.valid_tiles:
             tile_edges = tile.get_edges()
             if self.NORTH is not None and self.NORTH != tile_edges[0] and tile in self.valid_tiles:
-                self.valid_tiles.remove(tile)
+                tiles_to_remove.append(tile)
                 continue
             if self.EAST is not None and self.EAST != tile_edges[1] and tile in self.valid_tiles:
-                self.valid_tiles.remove(tile)
+                tiles_to_remove.append(tile)
                 continue
             if self.SOUTH is not None and self.SOUTH != tile_edges[2] and tile in self.valid_tiles:
-                self.valid_tiles.remove(tile)
+                tiles_to_remove.append(tile)
                 continue
             if self.WEST is not None and self.WEST != tile_edges[3]and tile in self.valid_tiles:
-                self.valid_tiles.remove(tile)
+                tiles_to_remove.append(tile)
                 continue
-        
-        # If there is only one valid tile, node is collapsed
-        if len(self.valid_tiles) is 1:
-            self.collapsed = True
-            self.tile_image = self.valid_tiles[0].get_image()
+
+        for tile in tiles_to_remove:
+            self.valid_tiles.remove(tile)
 
         # If there are no valid tiles, there is a contradiction
         # print the edges of the node that caused the contradiction
