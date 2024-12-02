@@ -2,21 +2,37 @@ def initialize_hex_values(pattern_size):
     hex_values = []
     for i in range(0, 4):
         hex_values.append([])
-        for j in range(0, pattern_size):
-            hex_values[i].append(0)
     return hex_values
 
 def rgb_to_hex(rgb):
     return '#{:02x}{:02x}{:02x}'.format(rgb[0], rgb[1], rgb[2])
 
 def encode_bitmap_edges(bitmap, pattern_size):
+    #bitmap is a 2d array of rgb values
     hex_values = initialize_hex_values(pattern_size)
-    for i in range(0, pattern_size):
-        hex_values[0][i] = rgb_to_hex(bitmap[i][0])
-        hex_values[1][i] = rgb_to_hex(bitmap[i][pattern_size - 1])
-    for i in range(0, pattern_size):
-        hex_values[2][i] = rgb_to_hex(bitmap[0][i])
-        hex_values[3][i] = rgb_to_hex(bitmap[pattern_size - 1][i])
+    #do three sample points on each edge
+    #north edge
+    hex_values[0].append(rgb_to_hex(bitmap[0][0]))
+    hex_values[0].append(rgb_to_hex(bitmap[0][pattern_size // 2]))
+    hex_values[0].append(rgb_to_hex(bitmap[0][pattern_size - 1]))
+
+    # east edge
+    hex_values[3].append(rgb_to_hex(bitmap[pattern_size - 1][pattern_size - 1]))
+    hex_values[3].append(rgb_to_hex(bitmap[pattern_size // 2][pattern_size - 1]))
+    hex_values[3].append(rgb_to_hex(bitmap[0][pattern_size - 1]))
+
+    #south edge
+    hex_values[2].append(rgb_to_hex(bitmap[pattern_size - 1][pattern_size - 1]))
+    hex_values[2].append(rgb_to_hex(bitmap[pattern_size - 1][pattern_size // 2]))
+    hex_values[2].append(rgb_to_hex(bitmap[pattern_size - 1][0]))
+
+    #west edge
+    hex_values[1].append(rgb_to_hex(bitmap[0][0]))
+    hex_values[1].append(rgb_to_hex(bitmap[pattern_size // 2][0]))
+    hex_values[1].append(rgb_to_hex(bitmap[pattern_size - 1][0]))
+
+
+
     return hex_values
 
 def convert_image_to_bitmap(image):
@@ -24,6 +40,6 @@ def convert_image_to_bitmap(image):
     for i in range(0, image.width):
         bitmap.append([])
         for j in range(0, image.height):
-            bitmap[i].append(image.getpixel((i, j)))
+            bitmap[i].append(image.getpixel((j, i)))
     return bitmap
 

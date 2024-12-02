@@ -1,68 +1,72 @@
 import numpy as np
-
 import copy
+import MapNode
 
-def propagate(row, col, wave, patterns, selected_pattern):
-    # Update allowed patterns for tiles to the right and below
-    right_edge = selected_pattern.get_east()
-    bottom_edge = selected_pattern.get_south()
-    num_patterns = len(patterns)
+class Model:
+    def __init__(self, width, height, num_patterns):
+        """
+        Initialize the model with grid dimensions and number of patterns.
+        """
+        self.width = width
+        self.height = height
+        self.num_patterns = num_patterns
+        self.wave = np.ones((height, width, num_patterns), dtype=bool)  # Tracks allowed patterns per tile
 
-    # Check every pattern on the tile below this one
-    # If the top edge of the pattern does not match the bottom edge of the pattern
-    # chosen for the current tile, then that pattern cannot be used
-    if row != len(wave) - 1:
-        bottom_tile_patterns = wave[row + 1, col]
-        for bottom_pattern_index in range(num_patterns - 1):
-            pattern_to_check = patterns[bottom_pattern_index]
-            if pattern_to_check.get_north() != bottom_edge:
-                bottom_tile_patterns[bottom_pattern_index] = False
+    def update_allowed_patterns(self, temp_wave, row, col, patterns, pattern_index):
+        """
+        Update neighboring tiles' allowed patterns based on edge matching.
+        """
+        pattern = patterns[pattern_index]
+        right_edge, bottom_edge = pattern.get_east(), pattern.get_south()
 
-    if col != len(wave[0]) - 1:
-        right_tile_patterns = wave[row, col + 1]
-        for right_pattern_index in range(num_patterns - 1):
-            pattern_to_check = patterns[right_pattern_index]
-            if pattern_to_check.get_west() != right_edge:
-                right_tile_patterns[right_pattern_index] = False
+        # Update the tile below
+        if row + 1 < self.height:
+            for idx, neighbor_pattern in enumerate(patterns):
+                if neighbor_pattern.get_north() != bottom_edge:
+                    temp_wave[row + 1, col, idx] = False
 
-# patterns is an array of MapNode containing every possible pattern
-# This function should recursively call itself to fill in the next tile based on temp_wave
-# Fill in output from left to right, top to bottom
-# If it becomes impossible to continue, backtrack until we reach a point where a different pattern can be tried
-def find_pattern_for_square(height, width, row, col, wave, patterns, patterns_chosen):
-    # len(patterns) = len(allowed_patterns)
-    num_patterns = len(patterns)
-    allowed_patterns = wave[row, col]
-    temp_wave = copy.deepcopy(wave)
+        # Update the tile to the right
+        if col + 1 < self.width:
+            for idx, neighbor_pattern in enumerate(patterns):
+                if neighbor_pattern.get_west() != right_edge:
+                    temp_wave[row, col + 1, idx] = False
 
-    # TODO: introduce randomness in pattern selection to make more interesting outputs
-    for pattern_index in range(num_patterns - 1):
-        if allowed_patterns[pattern_index]:
-            # This pattern is allowed, try using it
-            new_allowed_patterns = [False for _ in range(num_patterns)]
-            new_allowed_patterns[pattern_index] = True
-            temp_wave[row, col] = new_allowed_patterns
-            patterns_chosen[row][col] = pattern_index
+    def find_pattern_for_square(self, row, col, wave, patterns):
+        """
+        Recursively assign valid patterns to each tile, backtracking if needed.
+        """
+        allowed_patterns = wave[row, col]
+        if not np.any(allowed_patterns):  # No valid patterns
+            return []
 
-            propagate(row, col, temp_wave, patterns, patterns[pattern_index])
+        temp_wave = copy.deepcopy(wave)  # Preserve current state for backtracking
 
-            next_col = col + 1
-            next_row = row
-            if next_col == width:
-                next_row += 1
-                next_col = 0
-                if next_row == height:
-                    # This square is the last square in the output
-                    return patterns_chosen
+        for pattern_index in range(self.num_patterns):
+            if allowed_patterns[pattern_index]:
+                # Choose this pattern and update the wave
+                temp_wave[row, col] = np.zeros(self.num_patterns, dtype=bool)
+                temp_wave[row, col, pattern_index] = True
+                self.update_allowed_patterns(temp_wave, row, col, patterns, pattern_index)
 
-            next_result = find_pattern_for_square(height, width, next_row, next_col, temp_wave, patterns, patterns_chosen)
+                # Move to the next tile
+                next_col = (col + 1) % self.width
+                next_row = row + (col + 1) // self.width
+                if next_row == self.height:  # Grid filled
+                    return temp_wave
 
-            if len(next_result) != 0:
-                return next_result
-    # If the function reaches this point then no solution is possible
-    return []
+                # Recurse to the next tile
+                result = self.find_pattern_for_square(next_row, next_col, temp_wave, patterns)
+                if result:
+                    return result  # Solution found
 
-def run(height, width, patterns):
-    wave = np.ones((height, width, len(patterns)), dtype=bool)
-    patterns_chosen = [[-1 for _ in range(width)] for _ in range(height)]
-    return find_pattern_for_square(height, width, 0, 0, wave, patterns, patterns_chosen)
+        return []  # Backtrack if no valid configuration is possible
+
+    def run(self, patterns):
+        """
+        Start the Wave Function Collapse process and return the final wave.
+        """
+        result = self.find_pattern_for_square(0, 0, self.wave, patterns)
+        if not result:
+            print("Wave Function Collapse failed: no valid solution found.")
+            return None
+        return result
