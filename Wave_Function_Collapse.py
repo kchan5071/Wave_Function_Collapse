@@ -2,8 +2,6 @@ from Map import Map
 from MapNode import MapNode
 from PIL import Image
 import random
-import cv2
-import numpy as np
 
 class Model:
     def __init__(self, width, height, pattern_size, map_node,split_images):
@@ -86,8 +84,6 @@ class Model:
             print("\n")
 
             # self.build_map_image().show()
-            # cv2.imshow("Image", np.array(self.build_map_image()))
-            # cv2.waitKey(0)
 
         if self.map.find_lowest_entropy() == 0:
             print("CONTRADICTION")
