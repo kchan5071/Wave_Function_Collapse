@@ -70,9 +70,6 @@ class MapNode:
         # If already collapsed, no need to process
         if self.collapsed:
             return
-        
-        presize = len(self.valid_tiles)
-        original_tiles = self.valid_tiles.copy()
 
         # Iterate through valid tiles and remove invalid ones
         self.valid_tiles = [
@@ -82,24 +79,6 @@ class MapNode:
             (self.SOUTH is None or self.SOUTH == tile.get_edges()[2]) and
             (self.WEST is None or self.WEST == tile.get_edges()[3])
         ]
-
-        postsize = len(self.valid_tiles)
-        if presize != postsize:
-            print("Removed " + str(presize - postsize) + " invalid states")
-
-        #print tiles left
-        print("Valid Tiles")
-        for tile in self.valid_tiles:
-            print(tile.print_edges())
-
-        #print current node edges
-        print("Current Node")
-        self.print_edges()
-        
-
-        # Collapse if only one valid tile remains
-        # if len(self.valid_tiles) == 1:
-        #     self.collapse()
 
     def get_entropy(self):
         return len(self.valid_tiles)

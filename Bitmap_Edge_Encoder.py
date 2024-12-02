@@ -13,9 +13,6 @@ def encode_bitmap_edges(bitmap, pattern_size):
     # pattern_size -= 1
     #do three sample points on each edge
     #north edge
-    print("Bitmap: ", len(bitmap))
-    print("Bitmap[0]: ", len(bitmap[0]))
-    print("Pattern Size: ", pattern_size)
 
     hex_values[0].append(rgb_to_hex(bitmap[0][0]))
     hex_values[0].append(rgb_to_hex(bitmap[0][pattern_size // 2]))

@@ -10,6 +10,16 @@ def get_images(file_path):
             images.append(Image.open(file_path + file))
     return images
 
+def get_image(file_path):
+    if file_path.endswith(".png"):
+        return Image.open(file_path)
+    if os.path.isdir(file_path):
+        if len(get_images(file_path)) == 0:
+            print("No images found in directory")
+            exit()
+        return get_images(file_path)[0]
+    return Image.open(file_path)
+
 def split_image(image, pattern_size):
     images = []
     print("Image Size: ", image.width, image.height)

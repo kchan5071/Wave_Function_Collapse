@@ -12,10 +12,16 @@ from Wave_Function_Collapse import Model
 
 def get_args():
     default_output_path = os.getcwd()
-    default_pattern_size = 8
+    default_input_path = os.getcwd() + "/Assets/"
+    default_pattern_size = 16
+    default_size = 5
     parser = argparse.ArgumentParser(description='Wave Function Collapse')
     parser.add_argument('-n', type=int, default=default_pattern_size, help='Pattern size')
     parser.add_argument('-o', type=str, default=default_output_path, help='Output path')
+    parser.add_argument('-i', type=str, default=default_input_path, help='Input path')
+    parser.add_argument('-s', type=int, default=default_size, help='Size of the output image')
+    parser.add_argument('-v', type=bool, default=False, help='View the output image')
+    parser.add_argument('-p', type=bool, default=False, help='Print debug info')
     args = parser.parse_args()
     return args
 
@@ -27,18 +33,20 @@ def get_image_hash(image):
 
 def main():
     args = get_args()
-    width = 10
-    height = 10
-    current_directory = os.getcwd()
+    width = args.s
+    height = args.s
+    current_directory = args.i
     output_path = args.o
     pattern_size = args.n
     print ("Pattern Size: ", pattern_size)
+    print ("Output Path: ", output_path)
+    print ("Input Path: ", current_directory)
 
-    images = Image_Parser.get_images(current_directory + "/Assets/")
-    split_images = Image_Parser.split_image(images[0], pattern_size)
-    print("Split Images: ", len(split_images))
+    image = Image_Parser.get_image(current_directory)
+    split_images = Image_Parser.split_image(image, pattern_size)
+        
 
-    #remove duplicate images
+    # #remove duplicate images
     unique_images = []
     unique_hashes = []
     for i in range(0, len(split_images)):
@@ -48,6 +56,7 @@ def main():
             unique_hashes.append(image_hash)
 
     split_images = unique_images
+    print("Number of Tiles in set: ", len(split_images))
 
     #save split_images in test
     # for i in range(0, len(split_images)):
@@ -59,7 +68,7 @@ def main():
         edge = Bitmap_Edge_Encoder.encode_bitmap_edges(bitmap, pattern_size)
         edges.append(edge)
 
-    print("Edges: ", len(edges))
+    print("Number of Edges: ", len(edges))
 
     #show the split images
     # for i in range(0, len(split_images)):
@@ -78,10 +87,13 @@ def main():
         image_edge_dictionary.append(Edge_Image_Pair(edges[index], split_images[i]))
         index += 1
 
+    if width > 10 or height > 10:
+        print("large image, may take a while to process")
+
     #initialize map
     save_bitmap = None
     while save_bitmap is None:
-        model = Model(width, height, pattern_size, split_images, image_edge_dictionary)
+        model = Model(width, height, pattern_size, split_images, image_edge_dictionary, args.p)
         save_bitmap = model.run()
 
     #enlarge the image
@@ -92,12 +104,13 @@ def main():
     save_bitmap = save_bitmap.resize(dim, cv2.INTER_AREA)
 
     #show the final image
-    cv2.imshow("Image", np.array(save_bitmap))
-    cv2.waitKey(0)
-    
+    if args.v:
+        cv2.imshow("Image", np.array(save_bitmap))
+        cv2.waitKey(0)
 
-    # model = Model(5, 5, len(map_nodes), len(map_nodes[0]), map_nodes)
-    # model.run()
+    #save the final image
+    cv2.imwrite(output_path + "/output.png", np.array(save_bitmap))
+    print("Image saved to: ", output_path + "/output.png")
 
 if __name__ == "__main__":
     main()
