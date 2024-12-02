@@ -25,8 +25,8 @@ def get_initial_size(bitmap):
 
 def main():
     args = get_args()
-    width = 10
-    height = 10
+    width = 2
+    height = 2
     current_directory = os.getcwd()
     output_path = args.o
     pattern_size = args.n
@@ -35,10 +35,6 @@ def main():
     images = Image_Parser.get_images(current_directory + "/Assets/")
     split_images = Image_Parser.split_image(images[0], pattern_size)
     print("Split Images: ", len(split_images))
-    #show the split images
-    # for i in range(0, len(split_images)):
-    #         cv2.imshow("Image", np.array(split_images[i]))
-    #         cv2.waitKey(0)
 
     #save split_images in test
     # for i in range(0, len(split_images)):
@@ -52,10 +48,14 @@ def main():
 
     print("Edges: ", len(edges))
 
-
-    # # show the edges
-    # for i in range(0, len(edges)):
-    #     print(edges[i])
+    #show the split images
+    for i in range(0, len(split_images)):
+            print("NORTH: ", edges[i][0])
+            print("EAST: ", edges[i][1])
+            print("SOUTH: ", edges[i][2])
+            print("WEST: ", edges[i][3])
+            cv2.imshow("Image", np.array(split_images[i]))
+            cv2.waitKey(0)
 
 
     #initialize edge image pairs

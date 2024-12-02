@@ -76,12 +76,16 @@ class MapNode:
             tile_edges = tile.get_edges()
             if self.NORTH is not None and self.NORTH != tile_edges[0] and tile in self.valid_tiles:
                 self.valid_tiles.remove(tile)
+                continue
             if self.EAST is not None and self.EAST != tile_edges[1] and tile in self.valid_tiles:
                 self.valid_tiles.remove(tile)
+                continue
             if self.SOUTH is not None and self.SOUTH != tile_edges[2] and tile in self.valid_tiles:
                 self.valid_tiles.remove(tile)
+                continue
             if self.WEST is not None and self.WEST != tile_edges[3]and tile in self.valid_tiles:
                 self.valid_tiles.remove(tile)
+                continue
         
         # If there is only one valid tile, node is collapsed
         if len(self.valid_tiles) is 1:

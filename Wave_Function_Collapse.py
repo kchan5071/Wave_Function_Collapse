@@ -60,10 +60,15 @@ class Model:
         while self.map.find_highest_entropy() > 1 and self.map.find_lowest_entropy() != 0:
             #find node with lowest entropy
             lowest_entropy = self.map.find_next_node()
+
+            print ("Collapsing node: ", lowest_entropy)
             #collapse node
             self.collapse_node(lowest_entropy)
             #propagate entropy
             self.propagate_entropy(lowest_entropy)
+
+            self.map.print_entropy()
+            print("\n")
 
         if self.map.find_lowest_entropy() == 0:
             print("CONTRADICTION")
