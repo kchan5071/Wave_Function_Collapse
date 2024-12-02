@@ -10,16 +10,21 @@ def rgb_to_hex(rgb):
 def encode_bitmap_edges(bitmap, pattern_size):
     #bitmap is a 2d array of rgb values
     hex_values = initialize_hex_values(pattern_size)
+    # pattern_size -= 1
     #do three sample points on each edge
     #north edge
+    print("Bitmap: ", len(bitmap))
+    print("Bitmap[0]: ", len(bitmap[0]))
+    print("Pattern Size: ", pattern_size)
+
     hex_values[0].append(rgb_to_hex(bitmap[0][0]))
     hex_values[0].append(rgb_to_hex(bitmap[0][pattern_size // 2]))
     hex_values[0].append(rgb_to_hex(bitmap[0][pattern_size - 1]))
 
     # east edge
-    hex_values[3].append(rgb_to_hex(bitmap[pattern_size - 1][pattern_size - 1]))
-    hex_values[3].append(rgb_to_hex(bitmap[pattern_size // 2][pattern_size - 1]))
-    hex_values[3].append(rgb_to_hex(bitmap[0][pattern_size - 1]))
+    hex_values[1].append(rgb_to_hex(bitmap[pattern_size - 1][pattern_size - 1]))
+    hex_values[1].append(rgb_to_hex(bitmap[pattern_size // 2][pattern_size - 1]))
+    hex_values[1].append(rgb_to_hex(bitmap[0][pattern_size - 1]))
 
     #south edge
     hex_values[2].append(rgb_to_hex(bitmap[pattern_size - 1][pattern_size - 1]))
@@ -27,9 +32,9 @@ def encode_bitmap_edges(bitmap, pattern_size):
     hex_values[2].append(rgb_to_hex(bitmap[pattern_size - 1][0]))
 
     #west edge
-    hex_values[1].append(rgb_to_hex(bitmap[0][0]))
-    hex_values[1].append(rgb_to_hex(bitmap[pattern_size // 2][0]))
-    hex_values[1].append(rgb_to_hex(bitmap[pattern_size - 1][0]))
+    hex_values[3].append(rgb_to_hex(bitmap[0][0]))
+    hex_values[3].append(rgb_to_hex(bitmap[pattern_size // 2][0]))
+    hex_values[3].append(rgb_to_hex(bitmap[pattern_size - 1][0]))
 
 
 

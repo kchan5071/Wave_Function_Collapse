@@ -2,18 +2,17 @@ import argparse
 import os
 import cv2
 import numpy as np
+import hashlib
+from PIL import Image
 
 import Image_Parser
 import Bitmap_Edge_Encoder
-import MapNode
-from Map import Map
 from Edge_Image_Pair import Edge_Image_Pair
 from Wave_Function_Collapse import Model
-# from Model import Model
 
 def get_args():
     default_output_path = os.getcwd()
-    default_pattern_size = 3
+    default_pattern_size = 8
     parser = argparse.ArgumentParser(description='Wave Function Collapse')
     parser.add_argument('-n', type=int, default=default_pattern_size, help='Pattern size')
     parser.add_argument('-o', type=str, default=default_output_path, help='Output path')
@@ -23,10 +22,13 @@ def get_args():
 def get_initial_size(bitmap):
     return bitmap.width, bitmap.height
 
+def get_image_hash(image):
+    return hashlib.md5(image.tobytes()).hexdigest()
+
 def main():
     args = get_args()
-    width = 4
-    height = 4
+    width = 10
+    height = 10
     current_directory = os.getcwd()
     output_path = args.o
     pattern_size = args.n
@@ -35,6 +37,17 @@ def main():
     images = Image_Parser.get_images(current_directory + "/Assets/")
     split_images = Image_Parser.split_image(images[0], pattern_size)
     print("Split Images: ", len(split_images))
+
+    #remove duplicate images
+    unique_images = []
+    unique_hashes = []
+    for i in range(0, len(split_images)):
+        image_hash = get_image_hash(split_images[i])
+        if image_hash not in unique_hashes:
+            unique_images.append(split_images[i])
+            unique_hashes.append(image_hash)
+
+    split_images = unique_images
 
     #save split_images in test
     # for i in range(0, len(split_images)):
@@ -66,8 +79,10 @@ def main():
         index += 1
 
     #initialize map
-    model = Model(width, height, pattern_size, split_images, image_edge_dictionary)
-    save_bitmap = model.run()
+    save_bitmap = None
+    while save_bitmap is None:
+        model = Model(width, height, pattern_size, split_images, image_edge_dictionary)
+        save_bitmap = model.run()
 
     #enlarge the image
     scale_percent = 200

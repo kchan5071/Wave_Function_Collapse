@@ -62,7 +62,7 @@ class Map:
         for i in range(0, self.width):
             for j in range(0, self.height):
                 tile_entropy = self.tiles[i][j].get_entropy()
-                if tile_entropy < lowest_entropy and tile_entropy > 1:
+                if tile_entropy < lowest_entropy and self.tiles[i][j].is_collapsed() == False:
                     lowest_entropy = tile_entropy
                     lowest_entropy_index = (i, j)
         return lowest_entropy_index

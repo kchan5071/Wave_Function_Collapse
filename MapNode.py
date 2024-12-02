@@ -67,41 +67,51 @@ class MapNode:
         self.valid_tiles = [random_tile]
     
     def remove_invalid_states(self):
-        # Remove tiles that do not have the correct edge, part of the propagation process
-        # to make it easier
-        # North(0), East(1), South(2), West(3)
+        # If already collapsed, no need to process
         if self.collapsed:
             return
-        tiles_to_remove = []
+        
+        presize = len(self.valid_tiles)
+        original_tiles = self.valid_tiles.copy()
+
+        # Iterate through valid tiles and remove invalid ones
+        self.valid_tiles = [
+            tile for tile in self.valid_tiles
+            if (self.NORTH is None or self.NORTH == tile.get_edges()[0]) and
+            (self.EAST is None or self.EAST == tile.get_edges()[1]) and
+            (self.SOUTH is None or self.SOUTH == tile.get_edges()[2]) and
+            (self.WEST is None or self.WEST == tile.get_edges()[3])
+        ]
+
+        postsize = len(self.valid_tiles)
+        if presize != postsize:
+            print("Removed " + str(presize - postsize) + " invalid states")
+
+        #print tiles left
+        print("Valid Tiles")
         for tile in self.valid_tiles:
-            tile_edges = tile.get_edges()
-            if self.NORTH is not None and self.NORTH != tile_edges[0] and tile in self.valid_tiles:
-                tiles_to_remove.append(tile)
-                continue
-            if self.EAST is not None and self.EAST != tile_edges[1] and tile in self.valid_tiles:
-                tiles_to_remove.append(tile)
-                continue
-            if self.SOUTH is not None and self.SOUTH != tile_edges[2] and tile in self.valid_tiles:
-                tiles_to_remove.append(tile)
-                continue
-            if self.WEST is not None and self.WEST != tile_edges[3]and tile in self.valid_tiles:
-                tiles_to_remove.append(tile)
-                continue
+            print(tile.print_edges())
 
-        for tile in tiles_to_remove:
-            self.valid_tiles.remove(tile)
+        #print current node edges
+        print("Current Node")
+        self.print_edges()
+        
 
-        # If there are no valid tiles, there is a contradiction
-        # print the edges of the node that caused the contradiction
-        if len(self.valid_tiles) is 0:
-            print("CONTRADICTION")
-            print("NORTH: " + str(self.NORTH))
-            print("EAST: " + str(self.EAST))
-            print("SOUTH: " + str(self.SOUTH))
-            print("WEST: " + str(self.WEST))
+        # Collapse if only one valid tile remains
+        # if len(self.valid_tiles) == 1:
+        #     self.collapse()
 
     def get_entropy(self):
         return len(self.valid_tiles)
     
     def get_image(self):
         return self.tile_image
+    
+    def is_collapsed(self):
+        return self.collapsed
+    
+    def print_edges(self):
+        print("NORTH: ", self.NORTH)
+        print("EAST: ", self.EAST)
+        print("SOUTH: ", self.SOUTH)
+        print("WEST: ", self.WEST)

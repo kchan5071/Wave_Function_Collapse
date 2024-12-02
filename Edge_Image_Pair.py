@@ -11,3 +11,9 @@ class Edge_Image_Pair:
 
     def get_image(self):
         return self.image
+    
+    def print_edges(self):
+        print("NORTH: ", self.NORTH)
+        print("EAST: ", self.EAST)
+        print("SOUTH: ", self.SOUTH)
+        print("WEST: ", self.WEST)
