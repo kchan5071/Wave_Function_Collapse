@@ -11,12 +11,16 @@ def get_images(file_path):
     return images
 
 def get_image(file_path):
+    #check if file is a png
     if file_path.endswith(".png"):
         return Image.open(file_path)
+    #check if file is a directory
     if os.path.isdir(file_path):
+        #check if directory contains images
         if len(get_images(file_path)) == 0:
             print("No images found in directory")
             exit()
+        #return first image in directory
         return get_images(file_path)[0]
     return Image.open(file_path)
 

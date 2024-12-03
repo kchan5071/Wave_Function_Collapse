@@ -30,6 +30,7 @@ class Map:
         return self.width, self.height
     
     def initialize_empty_map(self):
+        #initialize empty map with empty nodes using the edge image dictionary
         self.tiles = []
         for i in range(0, self.width):
             self.tiles.append([])
@@ -37,6 +38,7 @@ class Map:
                 self.tiles[i].append(MapNode(self.edge_image_dictionary))
 
     def find_lowest_entropy(self):
+        #find the lowest entropy in the map
         lowest_entropy = self.tiles[0][0].get_entropy()
         for i in range(0, self.width):
             for j in range(0, self.height):
@@ -45,6 +47,7 @@ class Map:
         return lowest_entropy
     
     def find_lowest_nodes(self):
+        #find the lowest entropy nodes in the map
         lowest_entropy = self.tiles[0][0].get_entropy()
         lowest_entropy_nodes = []
         for i in range(0, self.width):
@@ -57,6 +60,9 @@ class Map:
         return lowest_entropy_nodes
     
     def find_next_node(self):
+        #find the node with the lowest entropy, if there are multiple nodes with the same entropy, choose one randomly
+        #nodes already collapsed are not considered
+        #nodes with entropy 0 are not considered
         lowest_entropy_index = (random.randint(0, self.width - 1), random.randint(0, self.height - 1))
         lowest_entropy = 100000
         for i in range(0, self.width):
@@ -68,6 +74,7 @@ class Map:
         return lowest_entropy_index
     
     def find_highest_entropy(self):
+        #find the highest entropy in the map
         highest_entropy = self.tiles[0][0].get_entropy()    
         for i in range(0, self.width):
             for j in range(0, self.height):
