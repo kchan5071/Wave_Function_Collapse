@@ -65,10 +65,6 @@ class Model:
         #propagate entropy
         self.propagate(random_node)
 
-        # temp = self.build_map_image()
-        # cv2.imshow("Image", np.array(temp))
-        # cv2.waitKey(0)
-
         while self.map.find_highest_entropy() > 1 and self.map.find_lowest_entropy() != 0:
             #find node with lowest entropy
             lowest_entropy = self.map.find_next_node()
@@ -83,11 +79,6 @@ class Model:
             if self.map.width < 10 and self.map.height < 10 and self.print:
                 self.map.print_entropy()
                 print("\n")
-
-            # temp = self.build_map_image()
-            
-            # cv2.imshow("Image", np.array(temp))
-            # cv2.waitKey(0)
 
         if self.map.find_lowest_entropy() == 0:
             return None

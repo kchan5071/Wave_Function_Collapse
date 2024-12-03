@@ -10,8 +10,7 @@ def rgb_to_hex(rgb):
 def encode_bitmap_edges(bitmap, pattern_size):
     #bitmap is a 2d array of rgb values
     hex_values = initialize_hex_values(pattern_size)
-    # pattern_size -= 1
-    #do three sample points on each edge
+    #three sample points on each edge
     #north edge
 
     hex_values[0].append(rgb_to_hex(bitmap[0][0]))
