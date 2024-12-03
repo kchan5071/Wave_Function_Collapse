@@ -68,7 +68,7 @@ class Map:
         return lowest_entropy_index
     
     def find_highest_entropy(self):
-        highest_entropy = self.tiles[0][0].get_entropy()
+        highest_entropy = self.tiles[0][0].get_entropy()    
         for i in range(0, self.width):
             for j in range(0, self.height):
                 if self.tiles[i][j].get_entropy() > highest_entropy:

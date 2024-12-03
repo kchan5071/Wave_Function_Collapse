@@ -43,10 +43,10 @@ def main():
     print ("Input Path: ", current_directory)
     print ("Size of the output image: ", width, height)
 
+    # parse the image
     image = Image_Parser.get_image(current_directory)
     split_images = Image_Parser.split_image(image, pattern_size)
         
-
     # #remove duplicate images
     unique_images = []
     unique_hashes = []
@@ -59,10 +59,7 @@ def main():
     split_images = unique_images
     print("Number of Tiles in set: ", len(split_images))
 
-    #save split_images in test
-    # for i in range(0, len(split_images)):
-    #     cv2.imwrite("test" + str(i) + ".png", np.array(split_images[i]))
-
+    #initialize edges
     edges = []
     for i in range(0, len(split_images)):
         bitmap = Bitmap_Edge_Encoder.convert_image_to_bitmap(split_images[i])
@@ -70,25 +67,6 @@ def main():
         edges.append(edge)
 
     print("Number of Edges: ", len(edges))
-
-    #show the split images
-    # for i in range(0, len(split_images)):
-    #         print("NORTH: ", edges[i][0])
-    #         print("EAST: ", edges[i][1])
-    #         print("SOUTH: ", edges[i][2])
-    #         print("WEST: ", edges[i][3])
-    #         #scale the image
-    #         scale_percent = 200
-    #         width = int(split_images[i].width * scale_percent / 100)
-    #         height = int(split_images[i].height * scale_percent / 100)
-
-    #         dim = (width, height)
-    #         split_images[i] = split_images[i].resize(dim, cv2.INTER_AREA)
-    #         #convert to bgr
-    #         split_images[i] = cv2.cvtColor(np.array(split_images[i]), cv2.COLOR_RGB2BGR)
-    #         cv2.imshow("Image", np.array(split_images[i]))
-    #         cv2.waitKey(0)
-
 
     #initialize edge image pairs
     image_edge_dictionary = []
