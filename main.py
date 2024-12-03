@@ -41,6 +41,7 @@ def main():
     print ("Pattern Size: ", pattern_size)
     print ("Output Path: ", output_path)
     print ("Input Path: ", current_directory)
+    print ("Size of the output image: ", width, height)
 
     image = Image_Parser.get_image(current_directory)
     split_images = Image_Parser.split_image(image, pattern_size)
@@ -76,6 +77,15 @@ def main():
     #         print("EAST: ", edges[i][1])
     #         print("SOUTH: ", edges[i][2])
     #         print("WEST: ", edges[i][3])
+    #         #scale the image
+    #         scale_percent = 200
+    #         width = int(split_images[i].width * scale_percent / 100)
+    #         height = int(split_images[i].height * scale_percent / 100)
+
+    #         dim = (width, height)
+    #         split_images[i] = split_images[i].resize(dim, cv2.INTER_AREA)
+    #         #convert to bgr
+    #         split_images[i] = cv2.cvtColor(np.array(split_images[i]), cv2.COLOR_RGB2BGR)
     #         cv2.imshow("Image", np.array(split_images[i]))
     #         cv2.waitKey(0)
 
@@ -91,25 +101,32 @@ def main():
         print("large image, may take a while to process")
 
     #initialize map
-    save_bitmap = None
-    while save_bitmap is None:
+    saved_bitmap = None
+    while saved_bitmap is None:
         model = Model(width, height, pattern_size, split_images, image_edge_dictionary, args.p)
-        save_bitmap = model.run()
+        saved_bitmap = model.run()
 
     #enlarge the image
     scale_percent = 200
-    width = int(save_bitmap.width * scale_percent / 100)
-    height = int(save_bitmap.height * scale_percent / 100)
+    width = int(saved_bitmap.width * scale_percent / 100)
+    height = int(saved_bitmap.height * scale_percent / 100)
     dim = (width, height)
-    save_bitmap = save_bitmap.resize(dim, cv2.INTER_AREA)
+    saved_image = None
+    saved_image = saved_bitmap.resize(dim, cv2.INTER_AREA)
 
     #show the final image
     if args.v:
-        cv2.imshow("Image", np.array(save_bitmap))
+        #convert to bgr
+        saved_image = cv2.cvtColor(np.array(saved_image), cv2.COLOR_RGB2BGR)
+
+        cv2.imshow("Image", saved_image)
         cv2.waitKey(0)
 
     #save the final image
-    cv2.imwrite(output_path + "/output.png", np.array(save_bitmap))
+    cv2.imwrite(output_path + "/output.png", np.array(saved_image))
+    #save bitmap to output path
+    saved_bitmap.save(output_path + "/output.bmp")
+    Image
     print("Image saved to: ", output_path + "/output.png")
 
 if __name__ == "__main__":

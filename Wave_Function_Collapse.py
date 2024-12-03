@@ -52,6 +52,7 @@ class Model:
                 for x in range(0, self.map.pattern_size):
                     for y in range(0, self.map.pattern_size):
                         image.putpixel((i * self.map.pattern_size + x, j * self.map.pattern_size + y), tile_image.getpixel((x, y)))
+                
         return image
 
     
