@@ -36,5 +36,8 @@ based off of [this algorithm], implemented in python
 * -v (view the output image, default = False)
 * -p (print debug info, default - False)
 
+## Output
+* will output to output.bmp and output.png
+
 [this algorithm]: https://github.com/mxgmn/WaveFunctionCollapse 
 
